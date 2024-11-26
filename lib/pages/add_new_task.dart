@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_ostad/model/todo.dart';
 
 class AddNewTask extends StatefulWidget {
   const AddNewTask({super.key});
@@ -41,42 +42,53 @@ class _AddNewTaskState extends State<AddNewTask> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add new task"),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // for title
-              buildTextFormField(
-                  text: "Title", controller: titleController, context: context),
-              const SizedBox(
-                height: 40,
-              ),
-              // for description
-              buildTextFormField(
-                  text: "description",
-                  controller: descriptionController,
-                  context: context),
-              const SizedBox(
-                height: 120,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {}
-                },
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    minimumSize: const Size(double.infinity, 60),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8))),
-                child: const Text(
-                  "Add task",
-                  style: TextStyle(fontSize: 22, color: Colors.black87),
+          child: Form(
+            key: _formKey, // Associate the Form with the GlobalKey
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // for title
+                buildTextFormField(
+                    text: "Title", controller: titleController, context: context),
+                const SizedBox(
+                  height: 40,
                 ),
-              ),
-            ],
+                // for description
+                buildTextFormField(
+                    text: "Description",
+                    controller: descriptionController,
+                    context: context),
+                const SizedBox(
+                  height: 120,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      ToDo todo = ToDo(
+                        title: titleController.text.trim(),
+                        description: descriptionController.text.trim(),
+                      );
+                      Navigator.pop(context, todo); // Pass the new task back
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      minimumSize: const Size(double.infinity, 60),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8))),
+                  child: const Text(
+                    "Add task",
+                    style: TextStyle(fontSize: 22, color: Colors.black87),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
